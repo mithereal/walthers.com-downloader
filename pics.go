@@ -13,7 +13,7 @@ import (
 
 func fetchPics() {
 	fmt.Println("Fetching Pics Please Wait ....")
-	file, _ := os.Open("xml/sales.xml")
+	file, _ := os.Open("xml/result.xml")
 	defer file.Close()
 	br := bufio.NewReader(file)
 

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Version = "1.0"
+	Version = "2.0"
 )
 
 type PART struct {
@@ -44,14 +44,15 @@ type PRODLIST struct {
 }
 
 func main() {
-	fmt.Println("Starting the Walthers Fetch Tool")
+	fmt.Println("options: use the command walthers --help to see available options")
 	createDirs()
+	kingpin.Version(Version)
 	kingpin.Parse()
 	fetch()
 	marshall()
-	if *images != false {
-		fetchPics()
-	}
+
+	fetchPics()
+
 	fmt.Println("Success: Your files are in the 'xml' and 'images' directories")
 }
 
@@ -132,13 +133,19 @@ func marshall() {
 
 		ADVRES := part.Elements["ADVRES"][0].InnerText
 
-		if DLRSALE != "" {
+		if *jobtype == "sales" {
 
+			if DLRSALE != "" {
+
+				v.PARTS = append(v.PARTS, PART{PARTNO: PARTNO, UPC: UPC, DESCRIPTION: DESCRIPTION, LONGDESCRIPTION: LONGDESCRIPTION, CATEGORY: CATEGORY, MSRP: MSRP, RETAILSALEPRICE: RETAILSALEPRICE, PRICE: PRICE, RETAILSALESTART: RETAILSALESTART, RETAILSALEEND: RETAILSALEEND, DLR_NET: DLR_NET, DLRSALESTART: DLRSALESTART, DLRSALEEND: DLRSALEEND, SCALE: SCALE, INSTOCK: INSTOCK, EXPECTED: EXPECTED, AVAILABILITY: AVAILABILITY, DISCONTINUED: DISCONTINUED, ADVRES: ADVRES})
+			}
+		} else {
 			v.PARTS = append(v.PARTS, PART{PARTNO: PARTNO, UPC: UPC, DESCRIPTION: DESCRIPTION, LONGDESCRIPTION: LONGDESCRIPTION, CATEGORY: CATEGORY, MSRP: MSRP, RETAILSALEPRICE: RETAILSALEPRICE, PRICE: PRICE, RETAILSALESTART: RETAILSALESTART, RETAILSALEEND: RETAILSALEEND, DLR_NET: DLR_NET, DLRSALESTART: DLRSALESTART, DLRSALEEND: DLRSALEEND, SCALE: SCALE, INSTOCK: INSTOCK, EXPECTED: EXPECTED, AVAILABILITY: AVAILABILITY, DISCONTINUED: DISCONTINUED, ADVRES: ADVRES})
+
 		}
 	}
 
-	filen := "xml/sales.xml"
+	filen := "xml/result.xml"
 	out, _ := os.Create(filen)
 
 	xmlWriter := io.Writer(out)
